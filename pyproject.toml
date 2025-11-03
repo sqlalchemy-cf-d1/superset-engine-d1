@@ -1,0 +1,25 @@
+[project]
+name = "superset-engine-d1"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Chad Rossouw",email = "chadrossouw7247@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+
+[tool.poetry]
+packages = [{include = "superset_engine_d1", from = "src"}]
+
+[tool.poetry.dependencies]
+apache-superset=">=3.0"
+sqlalchemy-d1 = { path = "../sqlalchemy-d1/dist/sqlalchemy_d1-0.1.2-py3-none-any.whl" }
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# Allows auto-discoverability by superset
+[project.entry-points."superset.db_engine_specs"]
+d1 = "superset_engine_d1.d1_engine_spec:D1EngineSpec"
+
