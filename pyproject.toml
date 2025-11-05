@@ -14,6 +14,7 @@ packages = [{include = "superset_engine_d1", from = "src"}]
 [tool.poetry.dependencies]
 apache-superset=">=3.0"
 sqlalchemy-d1 = { path = "../sqlalchemy-d1" }
+marshmallow = "3.26.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
