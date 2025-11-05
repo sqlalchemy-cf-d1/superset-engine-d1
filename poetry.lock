@@ -1333,7 +1333,7 @@ optional = false
 python-versions = ">=3.11,<3.12"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 requests = ">=2.32.5,<3.0.0"
@@ -3764,22 +3764,21 @@ sqlcipher = ["sqlcipher3_binary ; python_version >= \"3\""]
 
 [[package]]
 name = "sqlalchemy-d1"
-version = "0.1.2"
+version = "0.1.0"
 description = ""
 optional = false
 python-versions = ">=3.11,<3.12"
 groups = ["main"]
-files = [
-    {file = "sqlalchemy_d1-0.1.2-py3-none-any.whl", hash = "sha256:d303b9ab0d022476abf75acfb94a9b87511340ab0c01fec30ca00f90d872426a"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-dbapi-d1 = {path = "/Users/rossoc1/Desktop/University/2025F/CSCD01/project/dbapi-d1"}
+dbapi-d1 = {path = "../dbapi-d1", develop = true}
 sqlalchemy = ">=1.4,<2"
 
 [package.source]
-type = "file"
-url = "../sqlalchemy-d1/dist/sqlalchemy_d1-0.1.2-py3-none-any.whl"
+type = "directory"
+url = "../sqlalchemy-d1"
 
 [[package]]
 name = "sqlalchemy-utils"
@@ -4276,4 +4275,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "d2995d031c05c30b16f429120401885fc299f2936acde36ad781aaf5c5905cb5"
+content-hash = "292f1d82cb40ca24824fb60442be4384360e00a1c066ad637505cac82f55c5f1"

@@ -22,3 +22,5 @@ dist/
 
 # Logs
 *.log
+
+superset_config.py

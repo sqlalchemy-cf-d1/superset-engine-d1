@@ -13,7 +13,7 @@ packages = [{include = "superset_engine_d1", from = "src"}]
 
 [tool.poetry.dependencies]
 apache-superset=">=3.0"
-sqlalchemy-d1 = { path = "../sqlalchemy-d1/dist/sqlalchemy_d1-0.1.2-py3-none-any.whl" }
+sqlalchemy-d1 = { path = "../sqlalchemy-d1" }
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
