@@ -78,6 +78,8 @@ class D1EngineSpec(BaseEngineSpec):
         db_extra: dict[str, Any] | None = None,
     ) -> str | None:
         """Convert Python datetime to SQL literal."""
+        if dttm is None:
+            return None
         sqla_type = cls.get_sqla_column_type(target_type)
         if isinstance(sqla_type, (types.String, types.DateTime)):
             return f"""'{dttm.isoformat(sep=" ", timespec="seconds")}'"""
@@ -248,3 +250,15 @@ class D1EngineSpec(BaseEngineSpec):
             "zeroblob",
         ]
         return sorted(functions)
+
+    @classmethod
+    def get_virtual_table_context(
+        cls,
+        virtual_table,
+        database: Database,
+        schema=None
+    ) -> Table:
+        """
+        Return a Table object for virtual table exploration.       
+        """
+        return virtual_table
