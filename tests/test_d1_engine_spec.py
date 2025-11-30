@@ -13,7 +13,7 @@ from superset.errors import SupersetErrorType
 
 
 class DummyD1MetaData:
-    TABLES = ["test_table", "another_table", "_cf_configs"]
+    TABLES = ["test_table", "another_table", "parent_table", "child_table", "_cf_configs"]
     VIEWS = ["test_view", "_cf_data_view"]
 
     COLUMNS = {
@@ -27,16 +27,36 @@ class DummyD1MetaData:
             {"name": "id", "type": "INTEGER", "nullable": False, "default": None, "autoincrement": True},
             {"name": "description", "type": "TEXT", "nullable": True, "default": None, "autoincrement": False},
         ],
+        "parent_table": [
+            {"name": "id", "type": "INTEGER", "nullable": False, "default": None, "autoincrement": True},
+            {"name": "label", "type": "TEXT", "nullable": False, "default": None, "autoincrement": False},
+        ],
+        "child_table": [
+            {"name": "id", "type": "INTEGER", "nullable": False, "default": None, "autoincrement": True},
+            {"name": "parent_id", "type": "INTEGER", "nullable": False, "default": None, "autoincrement": False},
+            {"name": "info", "type": "TEXT", "nullable": True, "default": None, "autoincrement": False},
+        ],
     }
 
     PK = {
         "test_table": {"constrained_columns": ["id"]},
         "another_table": {"constrained_columns": ["id"]},
+        "parent_table": {"constrained_columns": ["id"]},
+        "child_table": {"constrained_columns": ["id"]},
     }
 
     FKS = {
         "test_table": [],
         "another_table": [],
+        "parent_table": [],
+        "child_table": [
+            {
+                "constrained_columns": ["parent_id"],
+                "referred_schema": None,
+                "referred_table": "parent_table",
+                "referred_columns": ["id"],
+            }
+        ],
     }
 
     @classmethod
@@ -49,10 +69,19 @@ class DummyD1MetaData:
         inspector.get_foreign_keys.side_effect = lambda table, schema=None: cls.FKS[table]
         return inspector
 
+
 class D1EngineSpecTestSuite(unittest.TestCase):
-    
+
     def setUp(self):
         self.inspector = DummyD1MetaData.make_inspector()
+
+    def test_epoch_to_dttm_returns_dttm(self):
+        dttm = D1EngineSpec.epoch_to_dttm()
+        self.assertEqual(dttm, "datetime({col}, 'unixepoch')")
+
+    def test_epoch_to_dttm_formats_column_correctly(self):
+        dttm = D1EngineSpec.epoch_to_dttm()
+        self.assertEqual(dttm.format(col="test_col"), "datetime(test_col, 'unixepoch')")
 
     def test_convert_dttm_none(self):
         self.assertIsNone(D1EngineSpec.convert_dttm("TEXT", None))
@@ -70,8 +99,8 @@ class D1EngineSpecTestSuite(unittest.TestCase):
 
     def test_get_table_names_filtered(self):
         tables = D1EngineSpec.get_table_names(None, self.inspector, schema=None)
-        self.assertEqual(tables, {"test_table", "another_table"})
-    
+        self.assertEqual(tables, {"test_table", "another_table", "parent_table", "child_table"})
+
     def test_get_view_names_filtered(self):
         views = D1EngineSpec.get_view_names(None, self.inspector, schema=None)
         self.assertEqual(views, {"test_view"})
@@ -85,6 +114,28 @@ class D1EngineSpecTestSuite(unittest.TestCase):
         self.assertNotIn("name", cols[0])
         self.assertEqual(cols[0]["column_name"], "id")
         self.assertEqual(cols[1]["column_name"], "name")
+
+    def test_get_pk_constraint_builds_constrained_columns(self):
+        constraint = D1EngineSpec.get_pk_constraint(self.inspector, "test_table")
+        self.assertEqual(constraint, DummyD1MetaData.PK["test_table"])
+
+    def test_get_pk_constraint_missing_table(self):
+        with self.assertRaises(RuntimeError) as ctx:
+            D1EngineSpec.get_pk_constraint(self.inspector, "missing_table")
+        self.assertIn("D1EngineSpec: Failed to fetch PK for missing_table", str(ctx.exception))
+
+    def test_get_foreign_keys_parses_foreign_key_list(self):
+        constraints = D1EngineSpec.get_foreign_keys(self.inspector, "child_table")
+        self.assertEqual(constraints, DummyD1MetaData.FKS["child_table"])
+
+    def test_get_foreign_keys_missing_table(self):
+        with self.assertRaises(RuntimeError) as ctx:
+            D1EngineSpec.get_foreign_keys(self.inspector, "missing_table")
+        self.assertIn("D1EngineSpec: Failed to fetch FKs for missing_table", str(ctx.exception))
+
+    def test_get_foreign_keys_no_foreign_keys(self):
+        constraints = D1EngineSpec.get_foreign_keys(self.inspector, "parent_table")
+        self.assertEqual(constraints, DummyD1MetaData.FKS["parent_table"])
 
     def test_get_function_names(self):
         funcs = D1EngineSpec.get_function_names(None)
@@ -102,7 +153,7 @@ class D1EngineSpecTestSuite(unittest.TestCase):
         self.assertIs(context, mock_table)
 
     def test_custom_error_regex(self):
-        error_message = "Error: no such column: non_existent_col"        
+        error_message = "Error: no such column: non_existent_col"
         regex = list(D1EngineSpec.custom_errors.keys())[0]
         match = regex.search(error_message)
 
@@ -110,6 +161,7 @@ class D1EngineSpecTestSuite(unittest.TestCase):
         self.assertEqual(match.group("column_name"), "non_existent_col")
         error_type = D1EngineSpec.custom_errors[regex][1]
         self.assertEqual(error_type, SupersetErrorType.COLUMN_DOES_NOT_EXIST_ERROR)
+
 
 if __name__ == "__main__":
     unittest.main()
