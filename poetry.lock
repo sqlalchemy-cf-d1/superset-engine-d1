@@ -1381,17 +1381,15 @@ name = "dbapi-d1"
 version = "0.1.0"
 description = ""
 optional = false
-python-versions = ">=3.11,<3.12"
+python-versions = "<3.12,>=3.11"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "dbapi_d1-0.1.0-py3-none-any.whl", hash = "sha256:625093e0877bae62a14646fcb5a1a73e6ca00659b21dce4330c95a2ff4de1470"},
+    {file = "dbapi_d1-0.1.0.tar.gz", hash = "sha256:864837e89f30bd53874090996e761ae359258f182dc21c6d88b21be943f96787"},
+]
 
 [package.dependencies]
 requests = ">=2.32.5,<3.0.0"
-
-[package.source]
-type = "directory"
-url = "../dbapi-d1"
 
 [[package]]
 name = "defusedxml"
@@ -3970,18 +3968,16 @@ name = "sqlalchemy-d1"
 version = "0.1.0"
 description = ""
 optional = false
-python-versions = ">=3.11,<3.12"
+python-versions = "<3.12,>=3.11"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "sqlalchemy_d1-0.1.0-py3-none-any.whl", hash = "sha256:af359c7175b74b4e3f9ed3189bb8dcd1e02812cc10ef23e1ce8932e0a5dfcb5d"},
+    {file = "sqlalchemy_d1-0.1.0.tar.gz", hash = "sha256:9f33644a494d215ca1b79f13c02c5278e8a3a4fff1ca08a82446e54ac0314134"},
+]
 
 [package.dependencies]
-dbapi-d1 = {path = "../dbapi-d1", develop = true}
+dbapi-d1 = ">=0.1.0"
 sqlalchemy = ">=1.4,<2"
-
-[package.source]
-type = "directory"
-url = "../sqlalchemy-d1"
 
 [[package]]
 name = "sqlalchemy-utils"
@@ -4478,4 +4474,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "174f8d70012e74adf18f8ffa743df0b69034d0465acaeb0f9cc3df8107e52b2e"
+content-hash = "bbef4c2dbf4e39bab2ab79be6748109ecd7a3c8af3577e950df2c1bed6a0f6bc"

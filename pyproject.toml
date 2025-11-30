@@ -11,6 +11,7 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
+dynamic = ["dependencies"]
 
 [tool.poetry]
 packages = [{include = "superset_engine_d1", from = "src"}]
@@ -21,6 +22,11 @@ apache-superset=">=3.0"
 sqlalchemy-d1 = ">=0.1.0"
 marshmallow = "3.26.1"
 
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.4.2,<9.0.0"
+black = ">=25.9.0,<26.0.0"
+mypy = ">=1.18.2,<2.0.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -30,13 +36,3 @@ build-backend = "poetry.core.masonry.api"
 d1 = "superset_engine_d1.d1_engine_spec:D1EngineSpec"
 
 
-[dependency-groups]
-dev = [
-    "pytest (>=8.4.2,<9.0.0)",
-    "black (>=25.9.0,<26.0.0)",
-    "mypy (>=1.18.2,<2.0.0)"
-]
-
-local = [
-    { name = "sqlalchemy-d1", path = "../sqlalchemy-d1", develop = true }
-]

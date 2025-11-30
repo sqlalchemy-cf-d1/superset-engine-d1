@@ -85,10 +85,6 @@ class D1EngineSpec(BaseEngineSpec):
             return f"""'{dttm.isoformat(sep=" ", timespec="seconds")}'"""
         return None
 
-    # ----------------------------------------------------------
-    # Reflection helpers
-    # ----------------------------------------------------------
-
     @classmethod
     def get_table_names(
         cls,
@@ -253,12 +249,9 @@ class D1EngineSpec(BaseEngineSpec):
 
     @classmethod
     def get_virtual_table_context(
-        cls,
-        virtual_table,
-        database: Database,
-        schema=None
+        cls, virtual_table, database: Database, schema=None
     ) -> Table:
         """
-        Return a Table object for virtual table exploration.       
+        Return a Table object for virtual table exploration.
         """
         return virtual_table
